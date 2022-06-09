@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { password } = require('../../config/database')
 const authConfig = require('../../config/auth')
+const {cookieParser} = require('../server')
 
 
 module.exports = {
@@ -10,7 +11,7 @@ module.exports = {
     //Login
     login(req, res) {
 
-        let { email, password } = req.body;
+        const { email, password } = req.body;
 
         //Buscar users
 
@@ -20,7 +21,10 @@ module.exports = {
             }
         }).then(user => {
             if (!user) {
-                res.status(404).json({ message: 'User not found' })
+                res.status(406).json({ 
+                    message: 'User not found',
+                    code:406
+        })
             } else {
                 if (bcrypt.compareSync(password, user.password)) {
 
@@ -34,16 +38,37 @@ module.exports = {
                     })
 
                 } else {
-                    res.status(401).json({ msg: 'Incorrect password ' })
+                    res.status(406).json({ msg: 'Incorrect password ' })
                 }
             }
         }).catch(err => { res.status(500).json(err) });
 
     },
 
+    //Función de cookie
+    coockie(req, res) {
+        // res.setHeader('Set-Cookie', 'newUser=true')
+        res.cookie('newUser', false)
+        res.cookie('isEmployee', true)
+
+        res.send('tienes las galletas!')
+
+    },
+
+    // Función de logout
+
+    logout(req, res) {
+        res.cookie('token','', {
+            maxAge:1
+        })
+        res.redirect('/')
+    },
+
+
     //Funcion para registro
     check_in(req, res) {
         //Encriptar contraseña
+        res.lo
         let password = bcrypt.hashSync(req.body.password, +authConfig.rounds);//-Llamo de .env a rounds
 
 

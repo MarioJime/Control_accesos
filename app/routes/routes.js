@@ -1,14 +1,15 @@
 const express = require('express');
 const router = express.Router();
 
-//Controladores
+//Rutas-Controladores-Requeridos
 const AuthController = require('../controllers/AuthController');
 const PostController = require('../controllers/PostController');
 
-//Middlewares
+//Rutas-Middlewares-Requeridas
 const auth = require('../middlewares/auth');    
 
-//Policies
+
+//Rutas-Politicas-Requeridas
 const PostPolicy = require('../policies/PostPolicy');
 
 
@@ -17,12 +18,15 @@ router.get('/', (req, res) => {
     res.json({ Welcome:'user!' })
 })
 
-//Ruta de login y registro
+
+//Ruta de login, logout y check_in
 
 router.post('/api/login', AuthController.login);
+router.get('/api/logout', AuthController.logout);
+router.get('/api/coockie', AuthController.coockie);
 router.post('/api/check_in', AuthController.check_in);
 
-//Rutas posts
+//Rutas middlewares
 
 router.get('/api/posts', auth, PostController.index);
 router.get('/api/posts/:id', auth, PostController.find,PostPolicy.show, PostController.show);
